@@ -1,3 +1,2 @@
-Agenda/.*
-
+Agenda/.gradle/buildOutputCleanup/
 Agenda/app/build/*
