@@ -2,7 +2,9 @@ package br.com.alura.agenda.modelo;
 
 import android.support.annotation.NonNull;
 
-public class Aluno {
+import java.io.Serializable;
+
+public class Aluno implements Serializable {
 
     private Long id;
     private String nome;
