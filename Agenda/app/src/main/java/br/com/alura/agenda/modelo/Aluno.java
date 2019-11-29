@@ -1,6 +1,7 @@
 package br.com.alura.agenda.modelo;
 
 import android.support.annotation.NonNull;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 
@@ -12,6 +13,7 @@ public class Aluno implements Serializable {
     private String telefone;
     private String site;
     private Double nota;
+    private String caminhoFoto;
 
     public Aluno() {
     }
@@ -69,5 +71,13 @@ public class Aluno implements Serializable {
     @Override
     public String toString() {
         return getId() + " - " + getNome();
+    }
+
+    public String getCaminhoFoto() {
+        return caminhoFoto;
+    }
+
+    public void setCaminhoFoto(String caminhoFoto) {
+        this.caminhoFoto = caminhoFoto;
     }
 }

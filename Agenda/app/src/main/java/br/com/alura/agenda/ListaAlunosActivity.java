@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import br.com.alura.agenda.adapter.AlunosAdapter;
+import br.com.alura.agenda.converter.AlunoConverter;
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.modelo.Aluno;
 
@@ -75,7 +78,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         AlunoDAO dao = new AlunoDAO(this);
         List<Aluno> alunos = dao.buscaAlunos();
 
-        ArrayAdapter<Aluno> listaAdapater = new ArrayAdapter<Aluno>(this,android.R.layout.simple_list_item_1,alunos);
+        AlunosAdapter listaAdapater = new AlunosAdapter(this,alunos);
         listaAlunos.setAdapter(listaAdapater);
     }
 
@@ -155,5 +158,27 @@ public class ListaAlunosActivity extends AppCompatActivity {
         });
 
     }
-    
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_lista_alunos,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_enviar_notas:
+
+                new EnviaAlunosTask(this).execute();
+
+                break;
+
+            case R.id.menu_baixar_provas:
+                final Intent vaiParaProvas = new Intent(this, ProvasActivity.class);
+                startActivity(vaiParaProvas);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
