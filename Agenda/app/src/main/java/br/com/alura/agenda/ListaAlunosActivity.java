@@ -4,18 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.provider.Browser;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -23,7 +19,6 @@ import android.widget.Toast;
 import java.util.List;
 
 import br.com.alura.agenda.adapter.AlunosAdapter;
-import br.com.alura.agenda.converter.AlunoConverter;
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.modelo.Aluno;
 
@@ -178,6 +173,12 @@ public class ListaAlunosActivity extends AppCompatActivity {
                 final Intent vaiParaProvas = new Intent(this, ProvasActivity.class);
                 startActivity(vaiParaProvas);
                 break;
+
+            case R.id.menu_mapa:
+                Intent vaiParaMapa = new Intent(this, MapaActivity.class);
+                startActivity(vaiParaMapa);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
