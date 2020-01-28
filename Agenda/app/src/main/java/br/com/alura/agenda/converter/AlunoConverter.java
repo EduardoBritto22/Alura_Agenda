@@ -10,7 +10,6 @@ import br.com.alura.agenda.modelo.Aluno;
 public class AlunoConverter {
 
 
-
     public String converterParaJson(List<Aluno> alunos) {
         JSONStringer js = new JSONStringer();
         try {
@@ -20,7 +19,7 @@ public class AlunoConverter {
                     .object()                       //"aluno": [
                     .key("aluno")                       //  {
                     .array();
-            for(Aluno aluno: alunos){
+            for (Aluno aluno : alunos) {
                 js.object();
                 js.key("nome").value(aluno.getNome());
                 js.key("nota").value(aluno.getNota());
@@ -32,11 +31,29 @@ public class AlunoConverter {
                     .endArray()
                     .endObject();
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        return js.toString();
+    }
+
+    public String converterParaJsonCompleto(Aluno aluno) {
+        JSONStringer js = new JSONStringer();
+        try {
+            js.object()
+                    .key("nome").value(aluno.getNome())
+                    .key("endereco").value(aluno.getEndereco())
+                    .key("site").value(aluno.getSite())
+                    .key("telefone").value(aluno.getTelefone())
+                    .key("nota").value(aluno.getNota())
+            .endObject();
+
             return js.toString();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

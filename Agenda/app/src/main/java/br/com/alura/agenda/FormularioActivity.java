@@ -1,8 +1,6 @@
 package br.com.alura.agenda;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -14,13 +12,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
 
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.modelo.Aluno;
+import br.com.alura.agenda.tasks.InsereAlunoTask;
 
 public class FormularioActivity extends AppCompatActivity {
 
@@ -82,6 +80,9 @@ public class FormularioActivity extends AppCompatActivity {
 
 
                 dao.close();
+
+                new InsereAlunoTask(aluno).execute();
+
                 Toast.makeText(FormularioActivity.this, aluno.getNome() + " Salvo", Toast.LENGTH_LONG).show();
 
                 finish();
