@@ -9,12 +9,6 @@ import java.util.Scanner;
 
 public class WebClient {
 
-
-    public void insere(String json) {
-        String endereco = "http://192.168.43.66:8080/api/aluno";
-        realizaConexao(json,endereco);
-    }
-
     public String post(String json) {
         String endereco = "https://www.caelum.com.br/mobile";
 

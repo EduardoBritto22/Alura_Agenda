@@ -7,8 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import br.com.alura.agenda.modelo.Aluno;
 
@@ -16,7 +19,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
 
     public AlunoDAO(@Nullable Context context) {
-        super(context, "Agenda", null, 2);
+        super(context, "Agenda", null, 4);
     }
 
     @Override
@@ -42,22 +45,67 @@ public class AlunoDAO extends SQLiteOpenHelper {
             case 1:
                 sql = "ALTER TABLE Alunos ADD COLUMN caminhoFoto TEXT;";
                 db.execSQL(sql);
+            case 2:
+                String criandoTabelaNova = "CREATE TABLE Alunos_novo " +
+                        "(id CHAR(36) PRIMARY KEY, " +
+                        "nome TEXT NOT NULL," +
+                        " endereco TEXT," +
+                        " telefone TEXT," +
+                        " site TEXT," +
+                        " nota REAL," +
+                        "caminhoFoto TEXT);";
+                db.execSQL(criandoTabelaNova);
+
+                String inserindoAlunosNaTabelaNova = "INSERT INTO Alunos_novo " +
+                        "(id, nome, endereco, telefone, site, nota, caminhoFoto) " +
+                        "SELECT id, nome, endereco, telefone, site, nota, caminhoFoto " +
+                        "FROM Alunos";
+
+                db.execSQL(inserindoAlunosNaTabelaNova);
+
+                String removendoTabelaAntiga = "DROP TABLE Alunos";
+                db.execSQL(removendoTabelaAntiga);
+
+                String alterandoNomeDaTabelaNova = "ALTER TABLE Alunos_novo " +
+                        "RENAME TO Alunos";
+                db.execSQL(alterandoNomeDaTabelaNova);
+
+
+            case 3:
+                String buscaAlunos = "SELECT * FROM Alunos";
+                Cursor cursor  = db.rawQuery(buscaAlunos, null);
+
+                String atualizaIdDoAluno = "UPDATE Alunos SET id=? WHERE id=?";
+
+                List<Aluno> alunos = populaAlunos(cursor);
+                for (Aluno aluno:
+                     alunos) {
+                    db.execSQL(atualizaIdDoAluno,new String[] { geraUUID(), aluno.getId()});
+                }
+
 
         }
 
+    }
+
+    private String geraUUID() {
+        return UUID.randomUUID().toString();
     }
 
     public void insere(Aluno aluno) {
 
         SQLiteDatabase db = getReadableDatabase();
         ContentValues dados = new ContentValues();
+        aluno.setId(geraUUID());
         dados = pegaDadosDoAluno(aluno);
 
-        db.insert("Alunos",null,dados);
+        db.insert("Alunos", null, dados);
+        //aluno.setId(id);
     }
 
     private ContentValues pegaDadosDoAluno(Aluno aluno) {
         ContentValues dados = new ContentValues();
+        dados.put("id",aluno.getId());
         dados.put("nome",aluno.getNome());
         dados.put("endereco",aluno.getEndereco());
         dados.put("telefone",aluno.getTelefone());
@@ -69,14 +117,22 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     public List<Aluno> buscaAlunos() {
 
-        List<Aluno> alunos = new ArrayList<>();
         String sql = "SELECT * FROM Alunos;";
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery(sql,null);
 
+        List<Aluno> alunos = populaAlunos(c);
+        c.close();
+
+        return alunos;
+    }
+
+    @NotNull
+    private List<Aluno> populaAlunos(Cursor c) {
+        List<Aluno> alunos = new ArrayList<>();
         while (c.moveToNext()){
             Aluno aluno = new Aluno();
-            aluno.setId(c.getLong(c.getColumnIndex("id")));
+            aluno.setId(c.getString(c.getColumnIndex("id")));
             aluno.setNome(c.getString(c.getColumnIndex("nome")));
             aluno.setEndereco(c.getString(c.getColumnIndex("endereco")));
             aluno.setTelefone(c.getString(c.getColumnIndex("telefone")));
@@ -85,8 +141,6 @@ public class AlunoDAO extends SQLiteOpenHelper {
             aluno.setCaminhoFoto(c.getString(c.getColumnIndex("caminhoFoto")));
             alunos.add(aluno);
         }
-        c.close();
-
         return alunos;
     }
 
