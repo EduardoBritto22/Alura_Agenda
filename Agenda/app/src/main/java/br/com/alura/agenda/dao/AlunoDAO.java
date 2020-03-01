@@ -41,7 +41,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String sql;
-        switch (oldVersion){
+        switch (oldVersion) {
             case 1:
                 sql = "ALTER TABLE Alunos ADD COLUMN caminhoFoto TEXT;";
                 db.execSQL(sql);
@@ -73,14 +73,14 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
             case 3:
                 String buscaAlunos = "SELECT * FROM Alunos";
-                Cursor cursor  = db.rawQuery(buscaAlunos, null);
+                Cursor cursor = db.rawQuery(buscaAlunos, null);
 
                 String atualizaIdDoAluno = "UPDATE Alunos SET id=? WHERE id=?";
 
                 List<Aluno> alunos = populaAlunos(cursor);
-                for (Aluno aluno:
-                     alunos) {
-                    db.execSQL(atualizaIdDoAluno,new String[] { geraUUID(), aluno.getId()});
+                for (Aluno aluno :
+                        alunos) {
+                    db.execSQL(atualizaIdDoAluno, new String[]{geraUUID(), aluno.getId()});
                 }
 
 
@@ -96,22 +96,27 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getReadableDatabase();
         ContentValues dados = new ContentValues();
-        aluno.setId(geraUUID());
+        insereIDseNecessario(aluno);
         dados = pegaDadosDoAluno(aluno);
 
         db.insert("Alunos", null, dados);
         //aluno.setId(id);
     }
 
+    private void insereIDseNecessario(Aluno aluno) {
+        if(aluno.getId() == null)
+             aluno.setId(geraUUID());
+    }
+
     private ContentValues pegaDadosDoAluno(Aluno aluno) {
         ContentValues dados = new ContentValues();
-        dados.put("id",aluno.getId());
-        dados.put("nome",aluno.getNome());
-        dados.put("endereco",aluno.getEndereco());
-        dados.put("telefone",aluno.getTelefone());
-        dados.put("site",aluno.getSite());
-        dados.put("nota",aluno.getNota());
-        dados.put("caminhoFoto",aluno.getCaminhoFoto());
+        dados.put("id", aluno.getId());
+        dados.put("nome", aluno.getNome());
+        dados.put("endereco", aluno.getEndereco());
+        dados.put("telefone", aluno.getTelefone());
+        dados.put("site", aluno.getSite());
+        dados.put("nota", aluno.getNota());
+        dados.put("caminhoFoto", aluno.getCaminhoFoto());
         return dados;
     }
 
@@ -119,7 +124,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
         String sql = "SELECT * FROM Alunos;";
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery(sql,null);
+        Cursor c = db.rawQuery(sql, null);
 
         List<Aluno> alunos = populaAlunos(c);
         c.close();
@@ -130,7 +135,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
     @NotNull
     private List<Aluno> populaAlunos(Cursor c) {
         List<Aluno> alunos = new ArrayList<>();
-        while (c.moveToNext()){
+        while (c.moveToNext()) {
             Aluno aluno = new Aluno();
             aluno.setId(c.getString(c.getColumnIndex("id")));
             aluno.setNome(c.getString(c.getColumnIndex("nome")));
@@ -148,7 +153,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         String[] params = {aluno.getId().toString()};
-        db.delete("Alunos","id = ?", params);
+        db.delete("Alunos", "id = ?", params);
 
 
     }
@@ -159,12 +164,12 @@ public class AlunoDAO extends SQLiteOpenHelper {
         String[] params = {aluno.getId().toString()};
         ContentValues dados = pegaDadosDoAluno(aluno);
 
-        db.update("Alunos",dados,"id = ?",params);
+        db.update("Alunos", dados, "id = ?", params);
     }
 
-    public boolean eAluno(String telefone){
+    public boolean eAluno(String telefone) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM Alunos WHERE telefone = ?",new String[]{telefone});
+        Cursor c = db.rawQuery("SELECT * FROM Alunos WHERE telefone = ?", new String[]{telefone});
 
         boolean resultado = c.getCount() > 0;
         c.close();
@@ -172,4 +177,22 @@ public class AlunoDAO extends SQLiteOpenHelper {
         return resultado;
     }
 
+    public void sincroniza(List<Aluno> alunos) {
+        for (Aluno aluno : alunos) {
+            if (existe(aluno)) {
+                altera(aluno);
+            } else {
+                insere(aluno);
+            }
+        }
+    }
+
+    private boolean existe(Aluno aluno) {
+        SQLiteDatabase db = getReadableDatabase();
+        String existe = "SELECT id FROM Alunos WHERE id=? LIMIT 1";
+        Cursor cursor = db.rawQuery(existe, new String[]{aluno.getId()});
+        int quantidade = cursor.getCount();
+
+        return quantidade > 0;
+    }
 }
