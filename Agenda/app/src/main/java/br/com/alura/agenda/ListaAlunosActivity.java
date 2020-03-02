@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -32,12 +33,23 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
     private ListView listaAlunos;
     private Button  button;
+    private SwipeRefreshLayout swipe;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_alunos);
         listaAlunos = findViewById(R.id.lista_alunos);
+
+        swipe = findViewById(R.id.swipe_lista_aluno);
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                buscaAlunos();
+            }
+        });
 
 
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -86,11 +98,14 @@ public class ListaAlunosActivity extends AppCompatActivity {
                 dao.sincroniza(alunoSync.getAlunos());
                 dao.close();
                 carregaLista();
+                swipe.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<AlunoSync> call, Throwable t) {
                 Log.e("onFailure", t.getMessage());
+                swipe.setRefreshing(false);
+
             }
         });
     }
