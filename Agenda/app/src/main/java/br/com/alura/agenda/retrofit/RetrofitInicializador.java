@@ -32,6 +32,6 @@ public class RetrofitInicializador {
     }
 
     public DispositivoService getDispositivoService() {
-        return null;
+        return retrofit.create(DispositivoService.class);
     }
 }

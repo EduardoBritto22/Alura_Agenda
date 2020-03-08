@@ -68,8 +68,8 @@ public class FormularioHelper {
             return;
 
         Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
-        Bitmap bitmapreduzido = Bitmap.createScaledBitmap(bitmap,300,300,true);
-        campoFoto.setImageBitmap(bitmapreduzido);
+//        Bitmap bitmapreduzido = Bitmap.createScaledBitmap(bitmap,300,300,true);
+  //      campoFoto.setImageBitmap(bitmapreduzido);
         campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
         campoFoto.setTag(caminhoFoto);
 

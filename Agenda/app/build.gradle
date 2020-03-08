@@ -41,4 +41,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-jackson:2.7.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }

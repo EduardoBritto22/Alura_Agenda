@@ -9,8 +9,6 @@ import android.support.annotation.RequiresApi;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
-import java.io.Serializable;
-
 import br.com.alura.agenda.R;
 import br.com.alura.agenda.dao.AlunoDAO;
 
@@ -32,7 +30,7 @@ public class SmsReceiver extends BroadcastReceiver {
         String telefone = sms.getDisplayOriginatingAddress();
 
         AlunoDAO dao = new AlunoDAO(context);
-        if(dao.eAluno(telefone)) {
+        if(dao.ehAluno(telefone)) {
             Toast.makeText(context, "Chegou um SMS de Aluno", Toast.LENGTH_SHORT).show();
             MediaPlayer mp = MediaPlayer.create(context, R.raw.msg);
             mp.start();
