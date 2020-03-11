@@ -16,10 +16,19 @@ public class Aluno implements Serializable {
     private String site;
     private Double nota;
     private String caminhoFoto;
+    private int     desativado;
 
     public Aluno() {
     }
 
+
+    public int getDesativado() {
+        return desativado;
+    }
+
+    public void setDesativado(int desativado) {
+        this.desativado = desativado;
+    }
 
     public Double getNota() {
         return nota;
@@ -81,5 +90,9 @@ public class Aluno implements Serializable {
 
     public void setCaminhoFoto(String caminhoFoto) {
         this.caminhoFoto = caminhoFoto;
+    }
+
+    public boolean estaDesativado() {
+        return desativado == 1;
     }
 }
